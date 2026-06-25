@@ -1,9 +1,9 @@
-8. Candidate Ranking Engine
-        ↓
-9. LLM Re-ranking
-        ↓
-10. Explainability
-        ↓
-11. Streaming Progress API
-        ↓
-12. Next.js Dashboard
+1. Save search results to DB
+2. Recommendation Engine
+3. Recruiter Results API
+4. Next.js Dashboard
+5. AI Recruiter Assistant
+6. Interview Question Generator
+7. Candidate Comparison
+8. Deployment
+9. Demo Video

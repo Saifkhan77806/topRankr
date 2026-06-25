@@ -42,7 +42,7 @@ def get_gmail_service():
 
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                    r"F:\TopRankr\TopRankrBackend\app\services\client_secret_654131460148-pp0287v54mul82g5v637o8nq9bthb6fp.apps.googleusercontent.com.json",
+                    r"D:\saif khan\topRankr\topRankr\app\services\client_secret_2_654131460148-pp0287v54mul82g5v637o8nq9bthb6fp.apps.googleusercontent.com.json",
                     SCOPES
                     )
 
