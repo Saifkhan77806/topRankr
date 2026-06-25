@@ -1,6 +1,10 @@
 1. Save search results to DB
 2. Recommendation Engine
-3. Recruiter Results API
+3.1 Recruiter Search Results API
+3.2 Recruiter Dashboard API
+3.3 Resume Viewer API
+3.4 Real-time Progress Tracking
+3.5 Recommendation Labels
 4. Next.js Dashboard
 5. AI Recruiter Assistant
 6. Interview Question Generator

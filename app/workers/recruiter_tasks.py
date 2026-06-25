@@ -34,6 +34,10 @@ from app.services.explainability.explainer_engine import (
     explain_candidates
 )
 
+from app.services.search_results.result_service import (
+    save_search_results
+)
+
 
 @celery_app.task
 def process_recruiter_search(
@@ -322,6 +326,22 @@ def process_recruiter_search(
         explained = explain_candidates(
             jd_profile,
             final_candidates
+        )
+
+        ##################################################
+        # STEP 8
+        ##################################################
+
+        update_job(
+            job_id,
+            "running",
+            97,
+            "Saving Results"
+        )
+
+        save_search_results(
+            job_id,
+            explained
         )
 
         print(
