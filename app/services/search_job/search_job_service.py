@@ -3,6 +3,47 @@ from app.core.database import SessionLocal
 from app.models.search_job import SearchJob
 
 
+def get_all_jobs():
+
+    db = SessionLocal()
+
+    try:
+
+        jobs = (
+            db.query(
+                SearchJob
+            )
+            .order_by(
+                SearchJob.id.desc()
+            )
+            .all()
+        )
+
+        return [
+
+            {
+                "id":
+                    job.id,
+
+                "status":
+                    job.status,
+
+                "progress":
+                    job.progress,
+
+                "current_step":
+                    job.current_step,
+
+                "created_at":
+                    job.created_at
+            }
+
+            for job in jobs
+        ]
+
+    finally:
+        db.close()
+
 
 def create_search_job():
 

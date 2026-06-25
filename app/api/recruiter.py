@@ -9,6 +9,14 @@ from app.schemas.recruiter import (
     RecruiterSearchRequest
 )
 
+from app.services.search_results.result_service import (
+    get_search_results
+)
+
+from app.services.search_job.search_job_service import (
+    get_all_jobs
+)
+
 router = APIRouter(
     prefix="/recruiter",
     tags=["Recruiter"]
@@ -56,3 +64,20 @@ def job_status(job_id: int):
     }
     
     
+@router.get(
+    "/search/{job_id}/results"
+)
+def recruiter_results(
+        job_id: int
+):
+
+    return get_search_results(
+        job_id
+    )
+
+@router.get(
+    "/jobs"
+)
+def recruiter_jobs():
+
+    return get_all_jobs()

@@ -45,3 +45,45 @@ def save_candidate(profile, summary, resume_path):
     db.close()
 
     return candidate
+
+
+
+def get_resume(
+        candidate_id
+):
+
+    db = SessionLocal()
+
+    try:
+
+        candidate = (
+
+            db.query(
+                Candidate
+            )
+
+            .filter(
+                Candidate.id ==
+                candidate_id
+            )
+
+            .first()
+        )
+
+        if not candidate:
+            return None
+
+        return {
+
+            "candidate_id":
+                candidate.id,
+
+            "name":
+                candidate.name,
+
+            "resume_path":
+                candidate.resume_path
+        }
+
+    finally:
+        db.close()
