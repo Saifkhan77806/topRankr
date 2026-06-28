@@ -3,7 +3,7 @@ from app.core.database import (
     engine
 )
 
-from app.models.candidate import Candidate
+from app.models.search_job import SearchJob
 
 Base.metadata.create_all(
     bind=engine
