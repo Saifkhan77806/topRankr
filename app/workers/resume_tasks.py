@@ -3,6 +3,13 @@ from app.services.resume.extractor import extract_resume_text
 from app.services.llm.openrouter_service import parseResumeWithLlm
 from app.services.summary.candidate_summary import generate_candidate_summary
 from app.services.embedding.bge_embedding import createEmbedding
+from app.services.candidate.candidate_service import (
+    save_candidate
+)
+
+from app.vectorstore.faiss_manager import (
+    add_candidate
+)
 
 
 
@@ -57,5 +64,25 @@ def process_candidate_email(email):
         print("Dimension:",len(embedding))
 
         print(embedding[:10])
+        
+        candidate = save_candidate(
+        profile=candidate_profile,
+        summary=summary,
+        resume_path=attachment
+    )
+
+    print(
+        "\nCandidate ID:",
+        candidate.id
+    )
+
+    add_candidate(
+        candidate.id,
+        embedding
+    )
+
+    print(
+        "\nStored in FAISS"
+    )
 
     print("\n=============================")
