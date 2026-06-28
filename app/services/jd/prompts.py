@@ -12,7 +12,7 @@ JD_SCHEMA = """
                     "education":[],
                     "domain":[]
                 }
-            """
+            """ 
 
 
 def build_jd_prompt(jd: str):

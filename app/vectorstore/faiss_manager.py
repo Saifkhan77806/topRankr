@@ -115,3 +115,55 @@ def search(
         })
 
     return results
+
+
+
+def search_candidates(
+        embedding,
+        requested_top_k=20
+):
+
+    global index
+    global candidate_map
+
+    retrieval_size = max(
+        requested_top_k * 5,
+        50
+    )
+
+    query = np.array(
+        [embedding],
+        dtype=np.float32
+    )
+
+    scores, positions = index.search(
+        query,
+        retrieval_size
+    )
+
+    results = []
+
+    for score, position in zip(
+        scores[0],
+        positions[0]
+    ):
+
+        if position == -1:
+            continue
+
+        candidate_id = candidate_map.get(
+            position
+        )
+
+        if candidate_id:
+
+            results.append({
+
+                "candidate_id":
+                    candidate_id,
+
+                "semantic_score":
+                    float(score)
+            })
+
+    return results
