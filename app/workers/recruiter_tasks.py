@@ -30,6 +30,10 @@ from app.services.reranking.qwen_reranker import (
     rerank_candidates
 )
 
+from app.services.explainability.explainer_engine import (
+    explain_candidates
+)
+
 
 @celery_app.task
 def process_recruiter_search(
@@ -229,11 +233,8 @@ def process_recruiter_search(
 
         reranked = (
             rerank_candidates(
-
                 jd_profile,
-
                 ranked,
-
                 top_k=top_k
             )
         )
@@ -267,6 +268,99 @@ def process_recruiter_search(
                     "reason"
                 ]
             )
+            
+        ##################################################
+        # STEP 7
+        ##################################################
+
+        update_job(
+            job_id,
+            "running",
+            92,
+            "Generating Explanations"
+        )
+
+        ranked_lookup = {
+
+            candidate["candidate_id"]:
+                candidate
+
+            for candidate in ranked
+        }
+
+        final_candidates = []
+
+        for reranked_candidate in reranked:
+
+            candidate = ranked_lookup.get(
+
+                reranked_candidate[
+                    "candidate_id"
+                ]
+            )
+
+            if candidate:
+
+                candidate[
+                    "ai_rank"
+                ] = reranked_candidate[
+                    "rank"
+                ]
+
+                candidate[
+                    "ai_reason"
+                ] = reranked_candidate[
+                    "reason"
+                ]
+
+                final_candidates.append(
+                    candidate
+                )
+
+        # IMPORTANT:
+        # call explainability AFTER loop
+        explained = explain_candidates(
+            jd_profile,
+            final_candidates
+        )
+
+        print(
+            "\n========== EXPLAINABILITY =========="
+        )
+
+        for candidate in explained:
+
+            print()
+
+            print(
+                "RANK:",
+                candidate["ai_rank"]
+            )
+
+            print(
+                "NAME:",
+                candidate["name"]
+            )
+
+            print(
+                "AI REASON:"
+            )
+
+            print(
+                candidate["ai_reason"]
+            )
+
+            print(
+                "EXPLANATION:"
+            )
+
+            for reason in candidate[
+                "explanation"
+            ]["reasons"]:
+                print(
+                    "✓",
+                    reason
+                )
 
         ##################################################
         # COMPLETE
@@ -279,7 +373,7 @@ def process_recruiter_search(
             "Completed"
         )
 
-        return reranked
+        return explained
 
     except Exception as e:
 
