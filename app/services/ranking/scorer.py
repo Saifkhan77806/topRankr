@@ -1,18 +1,21 @@
 def experience_score(
         jd,
-        candidate
+        profile
 ):
 
-    required = (
-        jd.get(
-            "experience_years",
-            0
-        )
+    required = jd.get(
+        "experience_years",
+        0
     )
 
     actual = (
-        candidate.get(
-            "experience_years",
+        profile
+        .get(
+            "professional",
+            {}
+        )
+        .get(
+            "total_experience_years",
             0
         )
     )
@@ -21,23 +24,39 @@ def experience_score(
         return 100
 
     return min(
-        actual /
-        required * 100,
+        (
+            actual /
+            required
+        ) * 100,
         100
     )
 
 def skill_score(
         jd,
-        candidate
+        profile
 ):
 
     required = set(
         jd["skills"]["required"]
     )
 
-    candidate_skills = set(
-        candidate.get(
-            "skills",
+    candidate_skills = set()
+
+    skills = profile.get(
+        "skills",
+        {}
+    )
+
+    candidate_skills.update(
+        skills.get(
+            "technical",
+            []
+        )
+    )
+
+    candidate_skills.update(
+        skills.get(
+            "tools",
             []
         )
     )
@@ -57,87 +76,298 @@ def skill_score(
 
 def industry_score(
         jd,
-        candidate
+        profile
 ):
 
-    if (
+    jd_industry = (
         jd.get(
             "industry",
             ""
-        ).lower()
-        ==
-        candidate.get(
+        )
+        .lower()
+    )
+
+    candidate_industry = (
+        profile
+        .get(
+            "professional",
+            {}
+        )
+        .get(
             "industry",
             ""
-        ).lower()
-    ):
+        )
+        .lower()
+    )
+
+    if jd_industry == candidate_industry:
         return 100
 
     return 0
 
 def seniority_score(
         jd,
-        candidate
+        profile
 ):
 
-    if (
+    jd_level = (
         jd.get(
             "seniority",
             ""
-        ).lower()
-        ==
-        candidate.get(
+        )
+        .lower()
+    )
+
+    candidate_level = (
+        profile
+        .get(
+            "professional",
+            {}
+        )
+        .get(
             "seniority",
             ""
-        ).lower()
-    ):
+        )
+        .lower()
+    )
+
+    if jd_level == candidate_level:
         return 100
 
     return 0
 
-def final_score(semantic, skills, experience, industry, seniority):
+def education_score(
+        jd,
+        profile
+):
+
+    jd_education = set(
+        jd.get(
+            "education",
+            []
+        )
+    )
+
+    candidate_education = set()
+
+    education = profile.get(
+        "education",
+        []
+    )
+
+    for e in education:
+
+        degree = e.get(
+            "degree",
+            ""
+        )
+
+        candidate_education.add(
+            degree
+        )
+
+    if not jd_education:
+        return 100
+
+    matched = len(
+        jd_education &
+        candidate_education
+    )
+
     return (
-        semantic * 0.50 +
+        matched /
+        len(
+            jd_education
+        )
+    ) * 100
+    
+    
+def leadership_score(
+        profile
+):
+
+    leadership_keywords = [
+
+        "lead",
+
+        "leader",
+
+        "manager",
+
+        "architect",
+
+        "mentored",
+
+        "managed"
+    ]
+
+    text = str(
+        profile
+    ).lower()
+
+    score = 0
+
+    for keyword in leadership_keywords:
+
+        if keyword in text:
+            score += 20
+
+    return min(
+        score,
+        100
+    )
+
+def final_score(
+
+        semantic,
+
+        skills,
+
+        experience,
+
+        industry,
+
+        seniority,
+
+        education,
+
+        leadership
+):
+
+    return (
+
+        semantic * 0.40 +
+
         skills * 0.25 +
-        experience * 0.15 +
+
+        experience * 0.10 +
+
         industry * 0.05 +
-        seniority * 0.05
+
+        seniority * 0.05 +
+
+        education * 0.05 +
+
+        leadership * 0.10
     )
     
-def rank_candidates(jd_profile, candidates):
+def rank_candidates(
+        jd,
+        candidates
+):
+
     ranked = []
 
-
     for candidate in candidates:
-        semantic = candidate["semantic_score"] * 100
 
-        skills = skill_score(jd_profile, candidate["profile"])
-
-        experience = experience_score(jd_profile, candidate["profile"])
-
-        industry = industry_score(jd_profile, candidate["profile"])
-
-        seniority = seniority_score(jd_profile, candidate["profile"])
-
-        score = final_score(semantic, skills, experience, industry, seniority)
-
-        candidate["ranking_score"] = score
-        
-        print()
-
-        print(
-            candidate["name"]
+        profile = (
+            candidate[
+                "profile"
+            ]
         )
 
-        print(
-            candidate["profile"]
+        semantic = (
+            candidate[
+                "semantic_score"
+            ] * 100
         )
 
-        ranked.append(candidate)
+        skills = skill_score(
+            jd,
+            profile
+        )
+
+        experience = (
+            experience_score(
+                jd,
+                profile
+            )
+        )
+
+        industry = (
+            industry_score(
+                jd,
+                profile
+            )
+        )
+
+        seniority = (
+            seniority_score(
+                jd,
+                profile
+            )
+        )
+
+        education = (
+            education_score(
+                jd,
+                profile
+            )
+        )
+
+        leadership = (
+            leadership_score(
+                profile
+            )
+        )
+
+        candidate[
+            "scores"
+        ] = {
+
+            "semantic":
+                semantic,
+
+            "skills":
+                skills,
+
+            "experience":
+                experience,
+
+            "industry":
+                industry,
+
+            "seniority":
+                seniority,
+
+            "education":
+                education,
+
+            "leadership":
+                leadership
+        }
+
+        candidate[
+            "ranking_score"
+        ] = final_score(
+
+            semantic,
+
+            skills,
+
+            experience,
+
+            industry,
+
+            seniority,
+
+            education,
+
+            leadership
+        )
+
+        ranked.append(
+            candidate
+        )
 
     ranked.sort(
-        key=lambda x:x["ranking_score"],
+
+        key=lambda x:
+            x[
+                "ranking_score"
+            ],
+
         reverse=True
-        )
-    
-    return ranked
+    )
+
+    return ranked[:30]

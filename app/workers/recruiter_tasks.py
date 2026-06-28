@@ -13,6 +13,8 @@ from app.services.recruiter.faiss_search import (semantic_candidate_search)
 from app.services.ranking.scorer import (rank_candidates)
 
 
+
+
 @celery_app.task
 def process_recruiter_search(job_id, job_description, top_k):
     try:
@@ -48,89 +50,42 @@ def process_recruiter_search(job_id, job_description, top_k):
 
         print("\nRetrieved:", len(candidates))
         
-        update_job(job_id, "running", 70, "Ranking Candidates")
+        update_job(
+        job_id,
+        "running",
+        70,
+        "Ranking Candidates"
+    )
 
-        ranked = (rank_candidates(jd_profile, candidates))
+        ranked = rank_candidates(
+            jd_profile,
+            candidates
+        )
 
-        print("\n========== TOP RANKED ==========")
+        print(
+            "\n========== TOP RANKED =========="
+        )
 
-        for i, c in enumerate(ranked[:5], start=1):
+        for candidate in ranked[:10]:
 
-            print()
+            print(candidate.keys())
 
             print(
-                f"RANK #{i}"
+                candidate["name"]
             )
 
-            print(
-                "NAME:"
-            )
-            print(
-                c["name"]
-            )
+            print(candidate.get("email", "N/A"))
+
+            print(candidate.get("resume_path", "N/A"))
 
             print(
-                "\nEMAIL:"
-            )
-            print(
-                c.get(
-                    "candidate_email",
-                    "N/A"
-                )
-            )
-
-            print(
-                "\nRESUME:"
-            )
-            print(
-                c.get(
-                    "resume_path",
-                    "N/A"
-                )
+                candidate["scores"]
             )
 
             print(
-                "\nCURRENT ROLE:"
-            )
-            print(
-                c.get(
-                    "title",
-                    "N/A"
-                )
-            )
-
-            print(
-                "\nINDUSTRY:"
-            )
-            print(
-                c.get(
-                    "industry",
-                    "N/A"
-                )
-            )
-
-            print(
-                "\nSEMANTIC SCORE:"
-            )
-            print(
-                c.get(
-                    "semantic_score",
-                    0
-                )
-            )
-
-            print(
-                "\nRANKING SCORE:"
-            )
-            print(
-                c.get(
-                    "ranking_score",
-                    0
-                )
-            )
-
-            print(
-                "\n=============================="
+                candidate[
+                    "ranking_score"
+                ]
             )
 
         # TEMPORARY

@@ -24,7 +24,7 @@ def generate_jd_summary(jd_profile):
                 {', '.join(preferred)}
 
                 Domain:
-                {', '.join(
+                {''.join(
                     jd_profile.get(
                         'domain',
                         []

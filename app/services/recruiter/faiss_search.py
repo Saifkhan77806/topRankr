@@ -52,6 +52,8 @@ def semantic_candidate_search(
 
             "name":
                 candidate.name,
+                
+            "email": candidate.email,
 
             "title":
                 candidate.current_title,
