@@ -1,0 +1,191 @@
+{
+  "personal": {
+    "name": "KHAN MOHD SAIF",
+    "email": "khansaif86783@email.com",
+    "phone": "+91-9833754741",
+    "location": null
+  },
+  "professional": {
+    "current_title": "Software Developer — Full Stack (MEAN)",
+    "total_experience_years": 1,
+    "industry": "Fintech",
+    "seniority": "Mid-Level",
+    "domain_expertise": [
+      "Fintech",
+      "Workflow Orchestration",
+      "Enterprise Backup Platforms",
+      "Distributed Systems",
+      "Developer Tooling"
+    ]
+  },
+  "skills": {
+    "technical": [
+      "JavaScript (ES2022+)",
+      "TypeScript",
+      "Java",
+      "Python",
+      "Go",
+      "React.js",
+      "Next.js",
+      "Angular",
+      "RxJS",
+      "Angular Signals",
+      "Tailwind CSS",
+      "HTML5",
+      "CSS3",
+      "Node.js",
+      "Express.js",
+      "Temporal Workflow Engine",
+      "REST APIs",
+      "JWT",
+      "MongoDB",
+      "MySQL",
+      "PostgreSQL",
+      "Distributed Systems",
+      "Microservices",
+      "Workflow Orchestration",
+      "System Design",
+      "AES-256 Encryption",
+      "AWS S3"
+    ],
+    "tools": [
+      "Docker",
+      "Git",
+      "GitHub",
+      "GitHub Actions",
+      "Vercel",
+      "CI/CD Pipelines",
+      "VS Code Extension API",
+      "NPX/NPM Packaging",
+      "Electron",
+      "PostCSS"
+    ],
+    "soft_skills": [],
+    "languages": ["JavaScript (ES2022+)", "TypeScript", "Java", "Python", "Go"]
+  },
+  "education": [
+    {
+      "degree": "Master of Computer Applications (MCA)",
+      "field": "Computer Applications",
+      "institution": "Institute of Distance and Open Learning (IDOL)",
+      "year": "2025–Present"
+    },
+    {
+      "degree": "Bachelor of Computer Applications (BCA)",
+      "field": "Computer Applications",
+      "institution": "Tilak Maharashtra Vidyapeeth",
+      "year": "2022–2025"
+    },
+    {
+      "degree": "Higher Secondary Certificate (HSC)",
+      "field": "",
+      "institution": "KJ Khilani High School and Junior College",
+      "year": "2022"
+    },
+    {
+      "degree": "Secondary School Certificate (SSC)",
+      "field": "",
+      "institution": "U.M. Thevar High School",
+      "year": "2020"
+    }
+  ],
+  "experience": [
+    {
+      "company": "OneLife Capital Advisors Limited",
+      "role": "Software Developer — Full Stack (MEAN)",
+      "duration": "Nov 2025 – Present",
+      "description": "Build and maintain end-to-end fintech applications using the full MEAN stack, design and deliver scalable RESTful APIs with sub-200ms response times, architect the DealTouch Website Builder, establish a shared Angular component library, and translate product requirements into reliable systems.",
+      "skills_used": [
+        "MEAN Stack",
+        "RESTful APIs",
+        "Angular Signals",
+        "MongoDB",
+        "Node.js",
+        "Express.js",
+        "Angular",
+        "System Design"
+      ]
+    },
+    {
+      "company": "Actify",
+      "role": "Frontend Developer (Contract)",
+      "duration": "Aug 2025 – Nov 2025",
+      "description": "Designed and developed scalable frontend features using React.js and Next.js, built responsive UI components, integrated third-party REST APIs, resolved production issues, and contributed to code reviews and knowledge-sharing.",
+      "skills_used": [
+        "React.js",
+        "Next.js",
+        "Tailwind CSS",
+        "REST APIs",
+        "CI/CD Pipelines"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "InfraPulse – Distributed Backup & Restore Orchestration System",
+      "description": "Architected a multi-tier distributed backup platform with fault-tolerant workflow orchestration via Temporal, end-to-end backup pipeline with encryption and storage promotion, and a metadata-driven job tracking system in PostgreSQL.",
+      "technologies": [
+        "Java",
+        "Spring Boot",
+        "Temporal",
+        "PostgreSQL",
+        "Electron",
+        "MEAN Stack",
+        "AWS S3"
+      ]
+    },
+    {
+      "name": "DealTouch Website Builder",
+      "description": "Designed a nested content model, implemented a drag-and-drop visual editor with multi-device preview, enforced data normalization pipelines, and delivered a production platform for business customers.",
+      "technologies": [
+        "Angular",
+        "TypeScript",
+        "Angular Signals",
+        "Node.js",
+        "Express.js",
+        "MongoDB"
+      ]
+    },
+    {
+      "name": "Node.js Snippets – VS Code Extension",
+      "description": "Published a VS Code extension with production-ready snippets for server setup, routing, and JWT authentication, reducing project bootstrap time from hours to minutes.",
+      "technologies": ["VS Code Extension API", "Node.js", "Express.js"]
+    },
+    {
+      "name": "Angular ZardUI CLI – NPX Package",
+      "description": "Developed an npx CLI tool to scaffold Angular + Tailwind CSS + Zard UI projects in seconds, automating project initialization, dependency installation, and responsive starter pages.",
+      "technologies": [
+        "Node.js",
+        "CLI Tooling",
+        "Angular",
+        "Tailwind CSS",
+        "PostCSS"
+      ]
+    },
+    {
+      "name": "Production Websites – React / Next.js",
+      "description": "Designed and delivered 4 client websites optimized for Core Web Vitals, mobile responsiveness, and SEO using Next.js SSR/SSG patterns, dynamic routing, and schema markup.",
+      "technologies": [
+        "React.js",
+        "Next.js",
+        "Tailwind CSS",
+        "SSR/SSG",
+        "SEO Optimization"
+      ]
+    }
+  ],
+  "certifications": [],
+  "leadership": {
+    "has_leadership": false,
+    "team_size": 0,
+    "management_experience": false
+  },
+  "achievements": [
+    "Reduced new feature development time by 25% via shared Angular component library",
+    "Improved application performance by ∼30% using bundle splitting and lazy loading",
+    "Reduced open bug count by 40% in first month",
+    "86+ downloads for Node.js Snippets VS Code extension",
+    "21+ weekly downloads for Angular ZardUI CLI",
+    "Delivered 4 production websites with SEO and performance optimizations"
+  ]
+}
