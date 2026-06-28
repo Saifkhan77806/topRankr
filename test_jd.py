@@ -15,7 +15,7 @@ parsed = parse_job_description(jd)
 
 print("\n==== JD PROFILE ====")
 
-print(parsed)
+print(parsed) 
 
 summary = generate_jd_summary(parsed)
 
