@@ -38,6 +38,10 @@ from app.services.search_results.result_service import (
     save_search_results
 )
 
+from app.services.recommendation.recommendation_engine import (
+    recommend_candidates
+)
+
 
 @celery_app.task
 def process_recruiter_search(
@@ -335,6 +339,22 @@ def process_recruiter_search(
         update_job(
             job_id,
             "running",
+            95,
+            "Generating Recommendations"
+        )
+
+        explained = recommend_candidates(
+            explained
+        )
+
+
+        ##################################################
+        # STEP 9
+        ##################################################
+
+        update_job(
+            job_id,
+            "running",
             97,
             "Saving Results"
         )
@@ -343,6 +363,12 @@ def process_recruiter_search(
             job_id,
             explained
         )
+
+        print("EXPLANATION:")
+
+        print("RECOMMENDATION:")
+
+        print(candidate["recommendation"])
 
         print(
             "\n========== EXPLAINABILITY =========="
