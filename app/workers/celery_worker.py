@@ -5,7 +5,8 @@ celery_app = Celery(
     broker="redis://localhost:6379/0",
     backend="redis://localhost:6379/0",
     include=[
-        "app.workers.resume_tasks", 
-        "app.workers.recruiter_tasks"
-        ]
+        "app.workers.resume_tasks",
+        "app.workers.recruiter_tasks",
+        "app.workers.learning_tasks",
+    ]
 )
