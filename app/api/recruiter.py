@@ -1,5 +1,8 @@
+import os
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
+
+from fastapi.responses import FileResponse
 
 from app.services.search_job.search_job_service import ( create_search_job, get_search_job )
 from app.workers.recruiter_tasks import (
@@ -20,6 +23,10 @@ from app.services.search_job.search_job_service import (
 
 from app.services.search_job.stream_service import (
     job_progress_stream
+)
+
+from app.services.candidate.candidate_service import (
+    get_candidate_details
 )
 
 router = APIRouter(
@@ -105,4 +112,87 @@ async def stream_job_progress(job_id: int):
             # Required by some browsers/proxies for proper SSE handling
             "X-Accel-Buffering": "no",
         },
+    )
+
+
+@router.get(
+    "/candidate/{candidate_id}"
+)
+def candidate_details(
+        candidate_id: int
+):
+
+    candidate = (
+        get_candidate_details(
+            candidate_id
+        )
+    )
+
+    if not candidate:
+
+        return {
+            "success": False,
+            "message":
+                "Candidate not found"
+        }
+
+    return {
+
+        "success": True,
+
+        "data":
+            candidate
+    }
+
+
+@router.get(
+    "/resume/{candidate_id}"
+)
+def download_resume(
+        candidate_id: int
+):
+
+    candidate = (
+        get_candidate_details(
+            candidate_id
+        )
+    )
+
+    if not candidate:
+
+        return {
+            "success": False,
+            "message":
+                "Candidate not found"
+        }
+
+    path = candidate[
+        "resume_path"
+    ]
+
+    if (
+        not path
+        or
+        not os.path.exists(
+            path
+        )
+    ):
+
+        return {
+            "success": False,
+            "message":
+                "Resume not found"
+        }
+
+    return FileResponse(
+
+        path,
+
+        media_type=
+            "application/pdf",
+
+        filename=
+            os.path.basename(
+                path
+            )
     )

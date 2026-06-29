@@ -87,3 +87,65 @@ def get_resume(
 
     finally:
         db.close()
+
+
+
+def get_candidate_details(
+        candidate_id
+):
+
+    db = SessionLocal()
+
+    try:
+
+        candidate = (
+            db.query(
+                Candidate
+            )
+            .filter(
+                Candidate.id ==
+                candidate_id
+            )
+            .first()
+        )
+
+        if not candidate:
+            return None
+
+        return {
+
+            "id":
+                candidate.id,
+
+            "name":
+                candidate.name,
+
+            "email":
+                candidate.email,
+
+            "phone":
+                candidate.phone,
+
+            "current_title":
+                candidate.current_title,
+
+            "experience_years":
+                candidate.experience_years,
+
+            "industry":
+                candidate.industry,
+
+            "summary":
+                candidate.summary,
+
+            "resume_path":
+                candidate.resume_path,
+
+            "profile":
+                candidate.profile
+        }
+
+    finally:
+
+        db.close()
+
