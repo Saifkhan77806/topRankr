@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 
 from app.services.search_job.search_job_service import ( create_search_job, get_search_job )
 from app.workers.recruiter_tasks import (
@@ -15,6 +16,10 @@ from app.services.search_results.result_service import (
 
 from app.services.search_job.search_job_service import (
     get_all_jobs
+)
+
+from app.services.search_job.stream_service import (
+    job_progress_stream
 )
 
 router = APIRouter(
@@ -81,3 +86,23 @@ def recruiter_results(
 def recruiter_jobs():
 
     return get_all_jobs()
+
+
+@router.get(
+    "/stream/{job_id}",
+    summary="Stream real-time job progress via Server-Sent Events",
+)
+async def stream_job_progress(job_id: int):
+
+    return StreamingResponse(
+        job_progress_stream(job_id),
+        media_type="text/event-stream",
+        headers={
+            # Disable all caching so every poll hits the server
+            "Cache-Control": "no-cache",
+            # Keep the HTTP/1.1 connection alive for the stream duration
+            "Connection": "keep-alive",
+            # Required by some browsers/proxies for proper SSE handling
+            "X-Accel-Buffering": "no",
+        },
+    )
