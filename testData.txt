@@ -1,9 +1,287 @@
-8. Candidate Ranking Engine
-        ↓
-9. LLM Re-ranking
-        ↓
-10. Explainability
-        ↓
-11. Streaming Progress API
-        ↓
-12. Next.js Dashboard
+1. Save search results to DB
+2. Recommendation Engine
+3.1 Recruiter Search Results API
+3.2 Recruiter Dashboard API
+3.3 Resume Viewer API
+3.4 Real-time Progress Tracking
+3.5 Recommendation Labels
+4. Next.js Dashboard
+5. AI Recruiter Assistant
+6. Interview Question Generator
+7. Candidate Comparison
+8. Deployment
+9. Demo Video
+
+If you've completed:
+
+✅ Resume Pipeline
+
+* Email ingestion
+* PDF extraction
+* Qwen resume parsing
+* Candidate profile generation
+* Candidate summary
+* BGE embedding
+* FAISS indexing
+* PostgreSQL storage
+
+✅ Recruiter Pipeline
+
+* Search job creation
+* JD parsing (Qwen)
+* JD summary
+* JD embedding
+* FAISS candidate search
+* Candidate ranking engine
+* Qwen re-ranking
+* Explainability engine
+* Save search results
+* Search results API
+* Recruiter dashboard API
+* Resume viewer API
+* Real-time progress API (SSE)
+
+then your **core AI backend is essentially complete**.
+
+# What's left to make TopRankr production-ready
+
+## 1. Recommendation Engine
+
+Currently you save:
+
+```text
+ranking_score = 91.2
+```
+
+Convert this into recruiter-friendly labels:
+
+```text
+95+   → Excellent Match
+85+   → Strong Match
+70+   → Good Match
+50+   → Potential Match
+<50   → Not Recommended
+```
+
+Example:
+
+```json
+{
+  "candidate_id": 4,
+  "ranking_score": 91,
+  "recommendation": "Strong Match"
+}
+```
+
+---
+
+## 2. Save Final Results in SearchJob.result
+
+Currently:
+
+```text
+SearchJob
+    id
+    status
+    progress
+    current_step
+```
+
+Store:
+
+```json
+{
+  "top_candidates": [...]
+}
+```
+
+This allows:
+
+```http
+GET /recruiter/jobs/5
+```
+
+to instantly return cached results.
+
+---
+
+## 3. Candidate Details API
+
+Create:
+
+```http
+GET /candidate/{candidate_id}
+```
+
+Return:
+
+```json
+{
+    "id": 4,
+    "name": "...",
+    "email": "...",
+    "phone": "...",
+    "profile": {...},
+    "summary": "...",
+    "resume_path": "..."
+}
+```
+
+---
+
+## 4. Resume Download API
+
+Instead of:
+
+```json
+{
+    "resume_path": "uploads/resume.pdf"
+}
+```
+
+implement:
+
+```http
+GET /candidate/4/download
+```
+
+which returns the actual PDF.
+
+---
+
+## 5. Recruiter Feedback Loop
+
+Allow recruiters to mark:
+
+```text
+✓ shortlisted
+✓ rejected
+✓ interviewed
+✓ hired
+```
+
+This becomes training data for future ranking improvements.
+
+Example table:
+
+```sql
+recruiter_feedback
+    id
+    job_id
+    candidate_id
+    decision
+```
+
+---
+
+## 6. Analytics Dashboard
+
+Show:
+
+```text
+Total resumes processed
+Total searches
+Average search time
+Top skills
+Top industries
+Top candidates
+Hiring funnel
+```
+
+---
+
+## 7. Security
+
+Add:
+
+* JWT authentication
+* Recruiter roles
+* Admin roles
+* API rate limiting
+* CORS restrictions
+
+---
+
+## 8. Docker Deployment
+
+Create:
+
+```text
+docker-compose.yml
+```
+
+for:
+
+```text
+FastAPI
+Celery
+Redis
+PostgreSQL
+FAISS volume
+```
+
+---
+
+## 9. Production Deployment
+
+Deploy:
+
+* FastAPI → Railway / AWS / GCP
+* Celery Workers → separate instances
+* PostgreSQL → managed database
+* Redis → managed Redis
+* Next.js → Vercel
+
+---
+
+# For the Hackathon
+
+You do NOT need everything above.
+
+The minimum winning architecture is:
+
+```text
+Candidate Pipeline
+    ✓
+
+Recruiter Pipeline
+    ✓
+
+Ranking Engine
+    ✓
+
+LLM Re-ranking
+    ✓
+
+Explainability
+    ✓
+
+Real-time Progress (SSE)
+    ✓
+
+Recruiter Dashboard
+    ✓
+
+Resume Viewer
+    ✓
+```
+
+# So for Hack2Skill/Rebord AI, the only things I'd add next are:
+
+### Priority 1
+
+* Recommendation labels
+* Candidate details API
+* Resume download API
+
+### Priority 2
+
+* Recruiter feedback loop
+
+### Priority 3
+
+* Analytics dashboard
+
+At this point, I'd estimate your backend is **around 92–95% complete** for a hackathon-grade AI recruiting platform.
+
+

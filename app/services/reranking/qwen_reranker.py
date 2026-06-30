@@ -145,7 +145,47 @@ def rerank_candidates(
     
     content = response.choices[0].message.content
 
-    content = content.replace("```json", "").replace("```", "")
+    content = (
+        content
+        .replace("```json", "")
+        .replace("```", "")
+    )
 
-    return json.loads(content)[:top_k]
+    try:
+
+        parsed = json.loads(content)
+
+    except Exception as e:
+
+        print(
+            "\nQWEN JSON ERROR:"
+        )
+
+        print(content)
+
+        raise e
+
+    # remove duplicates
+    seen = set()
+
+    final = []
+
+    for item in parsed:
+
+        candidate_id = item.get(
+            "candidate_id"
+        )
+
+        if candidate_id in seen:
+            continue
+
+        seen.add(
+            candidate_id
+        )
+
+        final.append(
+            item
+        )
+
+    return final[:top_k]
         
