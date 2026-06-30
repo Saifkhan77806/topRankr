@@ -3,7 +3,7 @@ import os
 from app.core.database import SessionLocal
 from app.models.candidate import Candidate
 from app.models.candidate_security import CandidateSecurity
-from app.services.security.email_security import calculate_resume_hash
+from app.services.security.resume_security import calculate_resume_hash
 
 
 def duplicate_resume_exists(resume_hash):

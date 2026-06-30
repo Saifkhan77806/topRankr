@@ -1,6 +1,10 @@
 import os
 
-from fastapi import APIRouter
+from fastapi import (
+    APIRouter,
+    Depends,
+    Request,
+)
 from fastapi.responses import StreamingResponse, FileResponse
 
 from app.services.search_job.search_job_service import (
@@ -26,6 +30,8 @@ from app.services.feedback.feedback_service import save_feedback
 from app.services.feedback.analytics import feedback_stats
 
 from app.workers.learning_tasks import task_learn_from_feedback
+from app.core.auth import recruiter_required
+from app.core.rate_limit import limiter
 
 
 router = APIRouter(
@@ -35,14 +41,19 @@ router = APIRouter(
 
 
 @router.post("/search")
-def search_candidates(request: RecruiterSearchRequest):
+@limiter.limit("5/minute")
+def search_candidates(
+        request: Request,
+        payload: RecruiterSearchRequest,
+        current_user=Depends(recruiter_required)
+):
 
     job = create_search_job()
 
     process_recruiter_search.delay(
         job.id,
-        request.job_description,
-        request.top_k,
+        payload.job_description,
+        payload.top_k,
     )
 
     return {
@@ -52,7 +63,10 @@ def search_candidates(request: RecruiterSearchRequest):
 
 
 @router.get("/jobs/{job_id}")
-def job_status(job_id: int):
+def job_status(
+        job_id: int,
+        current_user=Depends(recruiter_required)
+):
 
     job = get_search_job(job_id)
 
@@ -69,13 +83,18 @@ def job_status(job_id: int):
 
 
 @router.get("/search/{job_id}/results")
-def recruiter_results(job_id: int):
+def recruiter_results(
+        job_id: int,
+        current_user=Depends(recruiter_required)
+):
 
     return get_search_results(job_id)
 
 
 @router.get("/jobs")
-def recruiter_jobs():
+def recruiter_jobs(
+        current_user=Depends(recruiter_required)
+):
 
     return get_all_jobs()
 
@@ -98,7 +117,10 @@ async def stream_job_progress(job_id: int):
 
 
 @router.get("/candidate/{candidate_id}")
-def candidate_details(candidate_id: int):
+def candidate_details(
+        candidate_id: int,
+        current_user=Depends(recruiter_required)
+):
 
     candidate = get_candidate_details(candidate_id)
 
@@ -115,7 +137,10 @@ def candidate_details(candidate_id: int):
 
 
 @router.get("/resume/{candidate_id}")
-def download_resume(candidate_id: int):
+def download_resume(
+        candidate_id: int,
+        current_user=Depends(recruiter_required)
+):
 
     candidate = get_candidate_details(candidate_id)
 
@@ -141,7 +166,12 @@ def download_resume(candidate_id: int):
 
 
 @router.post("/feedback")
-def recruiter_feedback(request: FeedbackRequest):
+@limiter.limit("100/hour")
+def recruiter_feedback(
+        request: Request,
+        payload: FeedbackRequest,
+        current_user=Depends(recruiter_required)
+):
     """
     Save recruiter feedback and automatically trigger:
     1. Feature weight learning  (updates recruiter_preferences)
@@ -152,15 +182,15 @@ def recruiter_feedback(request: FeedbackRequest):
     """
 
     feedback = save_feedback(
-        request.job_id,
-        request.candidate_id,
-        request.feedback,
+        payload.job_id,
+        payload.candidate_id,
+        payload.feedback,
     )
 
     task_learn_from_feedback.delay(
-        job_id=request.job_id,
-        candidate_id=request.candidate_id,
-        feedback_type=request.feedback,
+        job_id=payload.job_id,
+        candidate_id=payload.candidate_id,
+        feedback_type=payload.feedback,
     )
 
     return {
@@ -171,6 +201,8 @@ def recruiter_feedback(request: FeedbackRequest):
 
 
 @router.get("/feedback/stats")
-def recruiter_feedback_stats():
+def recruiter_feedback_stats(
+        current_user=Depends(recruiter_required)
+):
 
     return feedback_stats()

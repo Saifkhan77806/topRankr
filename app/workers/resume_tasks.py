@@ -13,11 +13,14 @@ from app.vectorstore.faiss_manager import (
 
 from app.services.security.email_security import (
     SPAM_SCORE_THRESHOLD,
-    calculate_resume_hash,
     detect_prompt_injection,
     spam_score,
-    validate_attachment,
     validate_candidate_email,
+)
+
+from app.services.security.resume_security import (
+    calculate_resume_hash,
+    validate_extension,
     validate_mime,
     validate_size
 )
@@ -106,7 +109,7 @@ def process_candidate_email(email):
             )
             continue
 
-        if not validate_attachment(attachment):
+        if not validate_extension(attachment):
             reject_candidate_attachment(
                 email=email,
                 resume_hash=resume_hash,

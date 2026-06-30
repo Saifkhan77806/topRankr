@@ -1,5 +1,7 @@
 from fastapi import (
-    APIRouter
+    APIRouter,
+    Depends,
+    Request,
 )
 
 from app.schemas.comparison import (
@@ -9,6 +11,8 @@ from app.schemas.comparison import (
 from app.services.comparison.comparison_service import (
     compare_candidates
 )
+from app.core.auth import recruiter_required
+from app.core.rate_limit import limiter
 
 router = APIRouter(
 
@@ -23,15 +27,20 @@ router = APIRouter(
 @router.post(
     "/compare"
 )
+@limiter.limit("20/minute")
 def compare(
+        request: Request,
 
-        request:
+        payload:
         CandidateComparisonRequest
+        ,
+
+        current_user=Depends(recruiter_required)
 ):
 
     return compare_candidates(
 
-        request.job_id,
+        payload.job_id,
 
-        request.candidate_ids
+        payload.candidate_ids
     )

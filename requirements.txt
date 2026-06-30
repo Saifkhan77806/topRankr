@@ -24,3 +24,9 @@ pymupdf
 httpx
 
 python-multipart
+
+python-jose
+passlib[bcrypt]
+bcrypt==4.0.1
+slowapi
+email-validator
