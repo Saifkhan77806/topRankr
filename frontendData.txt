@@ -1,0 +1,565 @@
+I analyzed the structure of your uploaded **TopRankr backend**. Your project has evolved beyond a simple ATS—it's now an **AI-powered recruiter operating system**.
+
+The best way to build the frontend is **not by pages**, but by **backend domain layers**. This keeps the frontend aligned with your existing services, APIs, Celery workflows, and database models.
+
+# Your Current Backend Architecture
+
+```text
+Authentication Layer
+        ↓
+Recruiter Layer
+        ↓
+Search Pipeline
+        ↓
+AI Ranking Pipeline
+        ↓
+Candidate Layer
+        ↓
+Comparison Layer
+        ↓
+Learning Layer
+        ↓
+Analytics Layer
+        ↓
+Security Layer
+        ↓
+Infrastructure Layer
+```
+
+---
+
+# LAYER 1 — Authentication
+
+### Backend files
+
+```text
+app/api/auth.py
+app/models/user.py
+app/core/security.py
+app/core/auth.py
+app/core/password.py
+```
+
+### Frontend pages
+
+```text
+/login
+/register
+/profile
+```
+
+### Components
+
+```text
+LoginForm
+RegisterForm
+AuthGuard
+RoleGuard
+Navbar
+Sidebar
+```
+
+### APIs
+
+```http
+POST /auth/register
+POST /auth/login
+GET  /auth/me
+```
+
+---
+
+# LAYER 2 — Recruiter Dashboard
+
+### Backend files
+
+```text
+app/api/recruiter.py
+app/services/search_job/
+app/models/search_job.py
+```
+
+### Frontend pages
+
+```text
+/dashboard
+```
+
+### Components
+
+```text
+StatsCards
+RecentJobs
+RecentCandidates
+SearchCTA
+```
+
+### APIs
+
+```http
+GET /recruiter/jobs
+GET /dashboard/summary
+```
+
+---
+
+# LAYER 3 — Recruiter Search
+
+This is your core feature.
+
+### Backend files
+
+```text
+app/api/recruiter.py
+
+app/services/jd/
+    parser.py
+    summary.py
+    embedding.py
+
+app/services/recruiter/
+    faiss_search.py
+
+app/workers/
+    recruiter_tasks.py
+```
+
+### Frontend page
+
+```text
+/search
+```
+
+### Components
+
+```text
+JDInput
+JDUpload
+SearchButton
+SearchConfig
+```
+
+### API
+
+```http
+POST /recruiter/search
+```
+
+---
+
+# LAYER 4 — Live Search Progress
+
+### Backend
+
+```text
+app/services/search_job/stream_service.py
+```
+
+### Frontend
+
+```text
+/search/progress
+```
+
+### Components
+
+```text
+ProgressBar
+LiveTimeline
+SSEListener
+```
+
+### API
+
+```http
+GET /recruiter/progress/{job_id}
+```
+
+---
+
+# LAYER 5 — Search Results
+
+### Backend
+
+```text
+app/models/search_result.py
+app/services/search_results/
+app/services/ranking/
+app/services/reranking/
+app/services/explainability/
+```
+
+### Frontend
+
+```text
+/search/results/:jobId
+```
+
+### Components
+
+```text
+CandidateTable
+AIScoreCard
+ExplanationCard
+Filters
+Pagination
+```
+
+### APIs
+
+```http
+GET /recruiter/search/{job_id}
+```
+
+---
+
+# LAYER 6 — Candidate Details
+
+### Backend
+
+```text
+app/models/candidate.py
+
+app/services/candidate/
+    candidate_service.py
+```
+
+### Frontend
+
+```text
+/candidate/:candidateId
+```
+
+### Components
+
+```text
+ProfileHeader
+Skills
+Experience
+Education
+Projects
+Leadership
+```
+
+### API
+
+```http
+GET /candidate/{id}
+```
+
+---
+
+# LAYER 7 — Resume Viewer
+
+### Backend
+
+```text
+app/api/candidate.py
+```
+
+### Frontend
+
+```text
+/candidate/:id/resume
+```
+
+### Components
+
+```text
+PDFViewer
+DownloadButton
+```
+
+### APIs
+
+```http
+GET /candidate/resume/{id}
+GET /candidate/resume/{id}/download
+```
+
+---
+
+# LAYER 8 — Candidate Comparison
+
+### Backend
+
+```text
+app/api/comparison.py
+
+app/services/comparison/
+    comparison_service.py
+    ai_comparison.py
+```
+
+### Frontend
+
+```text
+/compare
+```
+
+### Components
+
+```text
+CandidateSelector
+ComparisonGrid
+WinnerCard
+RadarChart
+```
+
+### API
+
+```http
+POST /recruiter/compare
+```
+
+---
+
+# LAYER 9 — Recruiter Feedback
+
+### Backend
+
+```text
+app/models/recruiter_feedback.py
+
+app/services/feedback/
+    feedback_service.py
+```
+
+### Frontend
+
+Inside:
+
+```text
+/search/results
+/candidate
+```
+
+### Components
+
+```text
+ShortlistButton
+RejectButton
+InterviewButton
+HireButton
+```
+
+### API
+
+```http
+POST /recruiter/feedback
+```
+
+---
+
+# LAYER 10 — Recommendation Engine
+
+### Backend
+
+```text
+app/services/recommendation/
+    recommendation_engine.py
+```
+
+### Frontend
+
+```text
+/recommendations
+```
+
+### Components
+
+```text
+RecommendedCandidates
+ReasonCard
+SimilarityCard
+```
+
+---
+
+# LAYER 11 — Learning System
+
+### Backend
+
+```text
+app/services/learning/
+
+    preference_learning.py
+
+    historical_jd_learning.py
+
+app/workers/
+    learning_tasks.py
+```
+
+### Frontend
+
+```text
+/learning
+```
+
+### Components
+
+```text
+LearningStats
+RecruiterPreferences
+PreferenceWeights
+```
+
+---
+
+# LAYER 12 — Analytics Dashboard
+
+### Backend
+
+```text
+app/services/feedback/analytics.py
+```
+
+### Frontend
+
+```text
+/analytics
+```
+
+### Components
+
+```text
+CandidateChart
+IndustryChart
+SkillChart
+FeedbackChart
+HiringFunnel
+```
+
+### APIs
+
+```http
+GET /dashboard/summary
+GET /dashboard/skills
+GET /dashboard/industries
+GET /dashboard/feedback
+```
+
+---
+
+# LAYER 13 — Security Dashboard
+
+### Backend
+
+```text
+app/services/security/
+
+    email_security.py
+
+    resume_security.py
+
+    candidate_security_service.py
+
+app/models/
+    candidate_security.py
+```
+
+### Frontend
+
+```text
+/security
+```
+
+### Components
+
+```text
+ThreatTable
+DuplicateResumes
+SpamEmails
+PromptInjectionAlerts
+```
+
+---
+
+# LAYER 14 — Admin Panel
+
+### Backend
+
+```text
+app/models/user.py
+app/core/auth.py
+```
+
+### Frontend
+
+```text
+/admin
+```
+
+### Components
+
+```text
+UserManagement
+Roles
+Permissions
+AuditLogs
+```
+
+---
+
+# Build Order For Frontend
+
+Build in this exact sequence:
+
+```text
+PHASE 1
+--------
+1 Authentication
+
+PHASE 2
+--------
+2 Dashboard
+3 Recruiter Search
+4 Live Progress
+
+PHASE 3
+--------
+5 Search Results
+6 Candidate Details
+7 Resume Viewer
+
+PHASE 4
+--------
+8 Candidate Comparison
+9 Recruiter Feedback
+
+PHASE 5
+--------
+10 Recommendation Engine
+11 Learning Dashboard
+
+PHASE 6
+--------
+12 Analytics Dashboard
+13 Security Dashboard
+
+PHASE 7
+--------
+14 Admin Panel
+```
+
+# Estimated Importance for Hackathon
+
+| Layer                 | Importance |
+| --------------------- | ---------- |
+| Authentication        | ⭐⭐⭐        |
+| Dashboard             | ⭐⭐⭐⭐       |
+| Recruiter Search      | ⭐⭐⭐⭐⭐      |
+| Live Progress         | ⭐⭐⭐⭐⭐      |
+| Search Results        | ⭐⭐⭐⭐⭐      |
+| Candidate Details     | ⭐⭐⭐⭐⭐      |
+| Resume Viewer         | ⭐⭐⭐        |
+| Candidate Comparison  | ⭐⭐⭐⭐⭐      |
+| Recruiter Feedback    | ⭐⭐⭐⭐       |
+| Recommendation Engine | ⭐⭐⭐⭐       |
+| Learning              | ⭐⭐⭐⭐       |
+| Analytics             | ⭐⭐⭐⭐⭐      |
+| Security              | ⭐⭐⭐⭐⭐      |
+| Admin                 | ⭐⭐         |
+
+For your hackathon demo, I would build **only up to Layer 12**. The Admin panel can wait until after the demo.
