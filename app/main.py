@@ -8,8 +8,13 @@ from app.api.candidate import (
 
 app = FastAPI()
 
+from app.api.comparison import (
+    router as comparison_router
+)
+
 app.include_router(recruiter_router)
 app.include_router(candidate_router)
+app.include_router(comparison_router)
 
 
 @app.on_event("startup")

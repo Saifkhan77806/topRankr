@@ -5,7 +5,7 @@ import os
 
 
 load_dotenv()
-DATABASE_URL = "postgresql://postgres:pass%40123@localhost:5432/toprankr"
+DATABASE_URL = "postgresql://postgres:root%40123@localhost:5432/toprankr"
 engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
